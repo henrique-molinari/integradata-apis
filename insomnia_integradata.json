@@ -1,0 +1,420 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-10-05T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v10.0.0",
+  "resources": [
+    {
+      "_id": "wrk_integradata",
+      "_type": "workspace",
+      "parentId": null,
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "name": "IntegraData - APIs",
+      "description": "# IntegraData\n\nColeção de testes das 6 APIs REST do projeto de integração de dados (LojaTech).\n\n**Fluxo:** SQLite (5001) + PostgreSQL/Neon (5002) + Firebase (5003) → consolidação (5004) → MongoDB Atlas → consulta (5005) → Excel (5006).\n\n## Como usar\n1. Rode `startall.bat` na pasta do projeto (sobe as 6 APIs).\n2. Execute as pastas na ordem: **1 - Fontes de Dados** e depois **2 - Integração e Exportação**.\n3. As URLs base ficam no ambiente **Local** (variáveis `url_cliente`, `url_compras` etc.).",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_integradata_base",
+      "_type": "environment",
+      "parentId": "wrk_integradata",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "name": "Base Environment",
+      "data": {},
+      "dataPropertyOrder": null,
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1791247624412
+    },
+    {
+      "_id": "env_integradata_local",
+      "_type": "environment",
+      "parentId": "env_integradata_base",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "name": "Local",
+      "data": {
+        "url_cliente": "http://localhost:5001",
+        "url_compras": "http://localhost:5002",
+        "url_financeiro": "http://localhost:5003",
+        "url_consolidar": "http://localhost:5004",
+        "url_consolidados": "http://localhost:5005",
+        "url_exportar": "http://localhost:5006"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "url_cliente",
+          "url_compras",
+          "url_financeiro",
+          "url_consolidar",
+          "url_consolidados",
+          "url_exportar"
+        ]
+      },
+      "color": "#7d69cb",
+      "isPrivate": false,
+      "metaSortKey": 1791247624413
+    },
+    {
+      "_id": "fld_fontes",
+      "_type": "request_group",
+      "parentId": "wrk_integradata",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "name": "1 - Fontes de Dados",
+      "description": "APIs que consultam cada banco individualmente. Devem estar funcionando **antes** da consolidação.\n\n| API | Banco | Porta |\n|---|---|---|\n| api_cliente.py | SQLite | 5001 |\n| api_compras.py | PostgreSQL (Neon) | 5002 |\n| api_financeiro.py | Firebase Realtime DB | 5003 |",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -3
+    },
+    {
+      "_id": "fld_integracao",
+      "_type": "request_group",
+      "parentId": "wrk_integradata",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "name": "2 - Integração e Exportação",
+      "description": "APIs que consolidam as fontes no MongoDB Atlas, consultam os documentos gravados e exportam para Excel.\n\nExecute na ordem: consolidar → consolidados → exportar.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -2
+    },
+    {
+      "_id": "req_cliente_1",
+      "_type": "request",
+      "parentId": "fld_fontes",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "url": "{{ _.url_cliente }}/cliente/1",
+      "name": "SQLite - Cliente 1 (João Silva)",
+      "description": "## GET /cliente/{codigo}\n**API:** `api_cliente.py` · porta **5001** · banco **SQLite** (`clientes.db`)\n\nRetorna os dados cadastrais do cliente.\n\n**Resposta 200**\n```json\n{\"cidade\": \"Campinas\", \"codigo\": 1, \"endereco\": \"Rua A\", \"nome\": \"João Silva\"}\n```",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -100,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_cliente_2",
+      "_type": "request",
+      "parentId": "fld_fontes",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "url": "{{ _.url_cliente }}/cliente/2",
+      "name": "SQLite - Cliente 2 (Maria Souza)",
+      "description": "## GET /cliente/2\nCadastro da Maria Souza (São Paulo).\n\n**Resposta 200**\n```json\n{\"cidade\": \"São Paulo\", \"codigo\": 2, \"endereco\": \"Rua B\", \"nome\": \"Maria Souza\"}\n```",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -200,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_cliente_404",
+      "_type": "request",
+      "parentId": "fld_fontes",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "url": "{{ _.url_cliente }}/cliente/999",
+      "name": "SQLite - Cliente inexistente (404)",
+      "description": "## GET /cliente/999\nTeste negativo: cliente que não existe.\n\n**Resposta 404**\n```json\n{\"erro\": \"Cliente não encontrado\"}\n```",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -300,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_compras_1",
+      "_type": "request",
+      "parentId": "fld_fontes",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "url": "{{ _.url_compras }}/compras/1",
+      "name": "PostgreSQL - Compras do cliente 1",
+      "description": "## GET /compras/{cliente}\n**API:** `api_compras.py` · porta **5002** · banco **PostgreSQL (Neon)**\n\nHistórico de compras do cliente.\n\n**Resposta 200**\n```json\n[{\"data\": \"2026-01-10\", \"valor\": 1500.0}, {\"data\": \"2026-03-15\", \"valor\": 2000.0}]\n```\n\n> Se der erro 500, confira host/senha do Neon no `api_compras.py`.",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -400,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_compras_2",
+      "_type": "request",
+      "parentId": "fld_fontes",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "url": "{{ _.url_compras }}/compras/2",
+      "name": "PostgreSQL - Compras do cliente 2",
+      "description": "## GET /compras/2\n\n**Resposta 200**\n```json\n[{\"data\": \"2026-04-01\", \"valor\": 500.0}]\n```",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -500,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_financeiro_1",
+      "_type": "request",
+      "parentId": "fld_fontes",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "url": "{{ _.url_financeiro }}/financeiro/1",
+      "name": "Firebase - Financeiro do cliente 1",
+      "description": "## GET /financeiro/{codigo}\n**API:** `api_financeiro.py` · porta **5003** · banco **Firebase Realtime Database**\n\nLimite e saldo do cliente.\n\n**Resposta 200**\n```json\n{\"limite\": 50000, \"saldo\": 12000}\n```",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -600,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_financeiro_2",
+      "_type": "request",
+      "parentId": "fld_fontes",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "url": "{{ _.url_financeiro }}/financeiro/2",
+      "name": "Firebase - Financeiro do cliente 2",
+      "description": "## GET /financeiro/2\n\n**Resposta 200**\n```json\n{\"limite\": 30000, \"saldo\": 2500}\n```",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -700,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_financeiro_404",
+      "_type": "request",
+      "parentId": "fld_fontes",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "url": "{{ _.url_financeiro }}/financeiro/999",
+      "name": "Firebase - Cliente inexistente (404)",
+      "description": "## GET /financeiro/999\nTeste negativo.\n\n**Resposta 404**\n```json\n{\"erro\": \"Cliente não encontrado\"}\n```",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -800,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_consolidar_1",
+      "_type": "request",
+      "parentId": "fld_integracao",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "url": "{{ _.url_consolidar }}/consolidar/1",
+      "name": "Consolidar cliente 1 → MongoDB",
+      "description": "## GET /consolidar/{codigo}\n**API:** `api_consolidar.py` · porta **5004**\n\nBusca cliente (5001), compras (5002) e financeiro (5003), monta um documento e grava no MongoDB (`integracao_dados.cliente_consolidado`).\n\n**Resposta 200**\n```json\n{\"status\": \"sucesso\", \"cliente\": \"1\"}\n```\n\n> ⚠️ Cada chamada **insere um novo documento**. Evite repetir para não duplicar.",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -900,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_consolidar_2",
+      "_type": "request",
+      "parentId": "fld_integracao",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "url": "{{ _.url_consolidar }}/consolidar/2",
+      "name": "Consolidar cliente 2 → MongoDB",
+      "description": "## GET /consolidar/2\nMesmo fluxo para a Maria Souza.\n\n**Resposta 200**\n```json\n{\"status\": \"sucesso\", \"cliente\": \"2\"}\n```\n\n> ⚠️ Insere um novo documento a cada chamada.",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_consolidados",
+      "_type": "request",
+      "parentId": "fld_integracao",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "url": "{{ _.url_consolidados }}/consolidados",
+      "name": "Listar consolidados (MongoDB)",
+      "description": "## GET /consolidados\n**API:** `api_consolidados.py` · porta **5005**\n\nLista todos os documentos gravados no MongoDB.\n\n**Resposta 200**\n```json\n[{\"_id\": \"...\", \"cliente\": {\"codigo\": 1, \"nome\": \"João Silva\", \"cidade\": \"Campinas\", \"endereco\": \"Rua A\"}, \"compras\": [{\"data\": \"2026-01-10\", \"valor\": 1500.0}], \"financeiro\": {\"limite\": 50000, \"saldo\": 12000}}]\n```",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1100,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_exportar",
+      "_type": "request",
+      "parentId": "fld_integracao",
+      "modified": 1791247624412,
+      "created": 1791247624412,
+      "url": "{{ _.url_exportar }}/exportar",
+      "name": "Exportar para Excel",
+      "description": "## GET /exportar\n**API:** `api_exportar.py` · porta **5006**\n\nGera `clientes_consolidados.xlsx` na pasta do projeto (colunas: codigo, nome, cidade, limite, saldo).\n\n**Resposta 200**\n```json\n{\"arquivo\": \"clientes_consolidados.xlsx\", \"caminho\": \"C:\\\\...\\\\clientes_consolidados.xlsx\", \"registros\": 2}\n```\n\n> Feche o Excel antes, se o arquivo estiver aberto.",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1200,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    }
+  ]
+}
